@@ -1,0 +1,48 @@
+plugins {
+    id 'java-library'
+    id 'io.qameta.allure' version '2.10.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+def restAssuredVersion = "5.1.1",
+    junitVersion = "5.8.2",
+    seleniumVersion = "3.141.59",
+    wdManagerVersion = "5.2.1",
+    ownerVersion = "1.0.4",
+    assertjVersion = "3.23.1",
+    slf4jVersion = "1.7.36"
+
+dependencies {
+    testImplementation("io.rest-assured:rest-assured:$restAssuredVersion",
+        "org.junit.jupiter:junit-jupiter:$junitVersion",
+        "org.slf4j:slf4j-simple:$slf4jVersion",
+        "org.seleniumhq.selenium:selenium-java:$seleniumVersion",
+        "io.github.bonigarcia:webdrivermanager:$wdManagerVersion",
+        "org.aeonbits.owner:owner:$ownerVersion",
+        "org.assertj:assertj-core:$assertjVersion")
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding("UTF-8")
+}
+
+tasks.withType(Test) {
+    systemProperties(System.getProperties())
+    useJUnitPlatform()
+
+    testLogging {
+        lifecycle {
+            events "started", "skipped", "failed", "standard_error", "standard_out"
+            exceptionFormat "short"
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    //-PbaseUrl=https://github.com -Pbrowser=FIREFOX
+    systemProperties(System.getProperties())
+}
